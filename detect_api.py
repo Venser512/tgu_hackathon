@@ -53,7 +53,7 @@ async def root3 (request: Request):
     
     
 @app.post("/museum_picture/")
-async def root3 (request: Request):
+async def root4 (request: Request):
 
     contents = await request.body()
 
