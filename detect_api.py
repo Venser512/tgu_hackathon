@@ -10,24 +10,60 @@ from pydantic import BaseModel, Field
 
 app = FastAPI()
 
-class VideoRequest(BaseModel):
-    input_video: str = Field(..., description="Path to the input video file")
-    output_wav: str = Field(..., description="Path to the output audio file")
-    output_video: str = Field(..., description="Path to the output video file")
+@app.post("/landmark_image/")
+async def root (request: Request):
+    contents = await request.body()
 
-@app.post("/video/")
-async def root2(request: Request, video_request: VideoRequest):
-    result = inference_new.wav2lip_main(
-        face=video_request.input_video,
-        audio_param=video_request.output_wav,
-        outfile=video_request.output_video
-    )
+    data = json.loads(contents)
+
+    result = inference.process_image(image = data['input_image'])
 
     content = {"Result": result}
     headers = {"Content-Language": "en-US"}
 
     return JSONResponse(content=content, headers=headers)
+    
 
+@app.post("/landmark_text/")
+async def root2 (request: Request):
+
+    contents = await request.body()
+
+    data = json.loads(contents)
+
+    result = inference.process_text(image = data['input_text'])
+
+    content = {"Result": result}
+    headers = {"Content-Language": "en-US"}
+    return JSONResponse(content=content, headers=headers)
+
+
+@app.post("/landmark_geo/")
+async def root3 (request: Request):
+
+    contents = await request.body()
+
+    data = json.loads(contents)
+
+    result = inference.process_geo(lat = data['input_lat'], lon = data['input_lon'])
+
+    content = {"Result": result}
+    headers = {"Content-Language": "en-US"}
+    return JSONResponse(content=content, headers=headers)
+    
+    
+@app.post("/museum_picture/")
+async def root3 (request: Request):
+
+    contents = await request.body()
+
+    data = json.loads(contents)
+
+    result = inference.process_museum_picture(lat = data['input_image'])
+
+    content = {"Result": result}
+    headers = {"Content-Language": "en-US"}
+    return JSONResponse(content=content, headers=headers)
 
 
 
