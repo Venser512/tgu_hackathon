@@ -45,7 +45,26 @@ img_data = base64.b64decode(result['image'])
 result['image'] = Image.open(io.BytesIO(img_data))
 
 ```
+
+## Пример запроса к API по названию достопримечательности Москвы
+
+```
+url = "http://localhost:8000/landmark_text/"
+
+title = "Собор Василия Блаженного"
+
+with  requests.Session() as client:
+    resp_rep = client.post(url, data=json.dumps({"input_text" : title}))
+
+
+result = json.loads(json.loads(resp_rep.text)['Result'])
+img_data = base64.b64decode(result['image'])
+result['image'] = Image.open(io.BytesIO(img_data))
+
+```
+
 ### Пример результата запроса result
+
 
 ```
 {'title': 'Государственный исторический музей',
