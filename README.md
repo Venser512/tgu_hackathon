@@ -17,5 +17,28 @@
 
 ## Пройденные этапы:
 
+## Архитектура
 
+- Скрипт телеграмм бота обращается к API (FastApi для поиска достопримечательности по фотографии)
+
+## Пример запроса к API по фотографии достопримечательности Москвы
+
+```
+url = "http://localhost:8000/landmark_image/"
+import io
+import base64
+
+f = "E:\google-landmark-geo\Без имени.jpg"
+image = Image.open(f)
+
+buffered = io.BytesIO()
+image.save(buffered, format="JPEG")
+img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
+
+with  requests.Session() as client:
+    resp_rep = client.post(url, data=json.dumps({"input_image" : img_str}))
+
+resp_rep.json()
+
+```
 
