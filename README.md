@@ -32,7 +32,7 @@ f = "E:\google-landmark-geo\Без имени.jpg"
 image = Image.open(f)
 
 buffered = io.BytesIO()
-image.save(buffered, format="PNG")
+image.save(buffered, format="BMP")
 img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
 
 with  requests.Session() as client:
