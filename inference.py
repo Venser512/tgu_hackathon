@@ -19,7 +19,7 @@ cos = torch.nn.CosineSimilarity(dim=1)
 with open('train_attribution_geo_full_last4.json', encoding="utf-8") as f:
     data_landmark = json.load(f)
     
-with open('museum_description_last2.json', encoding="utf-8") as f1:
+with open('museum_description_last3.json', encoding="utf-8") as f1:
     data_museum = json.load(f1)
 
 x = torch.zeros(len(data_museum), 768)
