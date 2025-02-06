@@ -33,7 +33,7 @@
 
 - Для установки окружения используйте Python 3.11, а также зависимости из файла requirements.txt
 - Также возможна ручная установка путем выполения следующих команд
-
+```
 pip install torch==2.3.0+cu118 torchaudio==2.3.0+cu118 --index-url https://download.pytorch.org/whl/cu118
 pip install fastapi
 pip install pillow==10.4.0
@@ -46,6 +46,7 @@ pip install pandas
 pip install -U sentence-transformers
 pip install SentencePiece
 pip install protobuf==3.20.0
+```
 
 ## Пример запроса к API по фотографии достопримечательности Москвы
 
