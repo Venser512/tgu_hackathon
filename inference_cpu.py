@@ -29,14 +29,13 @@ n = 0
 for i in data_museum.keys():
    x[n] = torch.Tensor(data_museum[i]['image_vector'])
    n+=1
-x = x.to("cuda")
+
 
 n = 0
 for j in data_landmark.keys():
    y[n] = torch.Tensor(data_landmark[j]['image_vector'])
    n+=1
-y = y.to("cuda")
-print(y.shape)
+
 
 
 
@@ -45,22 +44,21 @@ print(y.shape)
 
 model2 = SentenceTransformer('DiTy/bi-encoder-russian-msmarco')
 
-model.to("cuda")
-model2.to("cuda")
+
 
 
 def process_image(img_str):
 
-    torch.cuda.empty_cache
+ 
     img_data = base64.b64decode(img_str)
     image = Image.open(io.BytesIO(img_data))
 
 
     n = 0
     res = ""
-    inputs = processor(images=image, return_tensors="pt").to("cuda")
+    inputs = processor(images=image, return_tensors="pt")
     image_features = model.get_image_features(**inputs).reshape(1,-1)
-    l = cos(image_features.to("cuda"), y)
+    l = cos(image_features, y)
     o = torch.argmax(l).item()
 
     for i in data_landmark.keys():
@@ -81,7 +79,7 @@ def process_image(img_str):
 
 def process_text(text):
 
-    torch.cuda.empty_cache
+
     n = 0
     res = ""
 
@@ -106,16 +104,16 @@ def process_text(text):
 
 
 def process_museum_image(img_str):
-    torch.cuda.empty_cache
+ 
     img_data = base64.b64decode(img_str)
     image = Image.open(io.BytesIO(img_data))
 
 
     n = 0
     res = ""
-    inputs = processor(images=image, return_tensors="pt").to("cuda")
+    inputs = processor(images=image, return_tensors="pt")
     image_features = model.get_image_features(**inputs).reshape(1,-1)
-    l = cos(image_features.to("cuda"), x)
+    l = cos(image_features, x)
     o = torch.argmax(l).item()
 
     for i in data_museum.keys():
@@ -123,10 +121,7 @@ def process_museum_image(img_str):
           res = i
           break
        n+=1
-       ''' o = cos(image_features, torch.Tensor(data_museum[i]['image_vector']).to("cuda"))
-       if o > n:
-          res = i
-          n = o '''
+
     print(o)      
     result = data_museum[res]
     finded_image =  Image.open(result['filename'])
@@ -139,7 +134,7 @@ def process_museum_image(img_str):
 
 def process_museum_text(text):
     
-    torch.cuda.empty_cache
+
     n = 0
     res = ""
     
