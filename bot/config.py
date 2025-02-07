@@ -12,7 +12,8 @@ class Settings(BaseSettings):
 
     ROOT_PATH: str = os.path.dirname(os.path.abspath(__file__))
     YOLO_PATH: str = ROOT_PATH + "/resources/yolo"
-    YOLO_CLASSES_DETECT: list = ['person', 'car', 'bus', "dog","cat"]
+    YOLO_CLASSES_DETECT: list = ['person', 'car', 'bus', "dog", "cat"]
+    API_URL: str = "http://localhost:8000/test"
 
 
 settings = Settings()

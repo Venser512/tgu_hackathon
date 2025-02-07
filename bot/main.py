@@ -15,8 +15,6 @@ from routers import router as main_router
 async def set_main_menu(bot: Bot):
     # Создаем список с командами и их описанием для кнопки menu
     main_menu_commands = [
-        BotCommand(command='/yolo',
-                   description='Поиск объектов на картинке'),
         BotCommand(command='/sign',
                    description='Поиск достопримечательности по фото'),
         BotCommand(command='/paint',
