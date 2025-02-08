@@ -39,7 +39,7 @@ https://disk.yandex.ru/d/MaK0Ky1BmS2mIQ
 
 ## Установка окружения
 
-- Для установки окружения используйте Python 3.11, а также зависимости из файла requirements.txt
+- Для установки создайте виртуальное окружения tgu (используйте Python 3.11), а также зависимости из файла requirements.txt
 - Также возможна ручная установка путем выполения следующих команд
 ```
 pip install torch==2.3.0+cu118 torchaudio==2.3.0+cu118 --index-url https://download.pytorch.org/whl/cu118
@@ -56,7 +56,7 @@ pip install SentencePiece
 pip install protobuf==3.20.0
 ```
 
-- Для использования модели VGG16 (поиск по картинам) необходимо развернуть отдельное окружение
+- Для использования модели VGG16 (поиск по картинам) необходимо развернуть отдельное окружение tgu_keras
   requirements_keras.txt
 
 ## Запуск API (в окружении tgu)
