@@ -11,6 +11,9 @@ import pandas as pd
 
 from sentence_transformers import SentenceTransformer, util
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(device)
+
 model = AutoModel.from_pretrained("google/siglip-base-patch16-224")
 processor = AutoProcessor.from_pretrained("google/siglip-base-patch16-224")
 
@@ -29,13 +32,13 @@ n = 0
 for i in data_museum.keys():
    x[n] = torch.Tensor(data_museum[i]['image_vector'])
    n+=1
-x = x.to("cuda")
+x = x.to(device)
 
 n = 0
 for j in data_landmark.keys():
    y[n] = torch.Tensor(data_landmark[j]['image_vector'])
    n+=1
-y = y.to("cuda")
+y = y.to(device)
 print(y.shape)
 
 
@@ -45,32 +48,38 @@ print(y.shape)
 
 model2 = SentenceTransformer('DiTy/bi-encoder-russian-msmarco')
 
-model.to("cuda")
-model2.to("cuda")
+model.to(device)
+model2.to(device)
 
 
 def process_image(img_str):
 
-    torch.cuda.empty_cache
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache
+
     img_data = base64.b64decode(img_str)
     image = Image.open(io.BytesIO(img_data))
 
 
     n = 0
     res = ""
-    inputs = processor(images=image, return_tensors="pt").to("cuda")
-    image_features = model.get_image_features(**inputs).reshape(1,-1)
-    l = cos(image_features.to("cuda"), y)
-    o = torch.argmax(l).item()
+    with torch.no_grad():
+      inputs = processor(images=image, return_tensors="pt").to(device)
+      image_features = model.get_image_features(**inputs).reshape(1,-1)
+      l = cos(image_features.to(device), y)
+      o = torch.argmax(l).item()
 
-    for i in data_landmark.keys():
-       if o == n:
-          res = i
-          break
-       n+=1
+      for i in data_landmark.keys():
+         if o == n:
+            res = i
+            break
+         n+=1
 
-    print(o)  
-    result = data_landmark[res]
+      print(l[o])  
+      if l[o].item() > 0.8: 
+        result = data_landmark[res]
+      else:
+        result =  {'title': 'Данная достопримечательность не найдена', 'location' : None,'descr' : [""], 'url' : "" , 'wikipedia' : ""}
 
     return json.dumps({'title': result['title'], 'location' : result['location'],'descr' : result['descr'][0], 'url' : result['url'] , 'wikipedia' : result['wikipedia']})
 
@@ -78,7 +87,8 @@ def process_image(img_str):
 
 def process_text(text):
 
-    torch.cuda.empty_cache
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache
     n = 0
     res = ""
 
@@ -103,29 +113,32 @@ def process_text(text):
 
 
 def process_museum_image(img_str):
-    torch.cuda.empty_cache
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache
     img_data = base64.b64decode(img_str)
     image = Image.open(io.BytesIO(img_data))
 
-
+    
     n = 0
     res = ""
-    inputs = processor(images=image, return_tensors="pt").to("cuda")
-    image_features = model.get_image_features(**inputs).reshape(1,-1)
-    l = cos(image_features.to("cuda"), x)
-    o = torch.argmax(l).item()
+    with torch.no_grad():
+      inputs = processor(images=image, return_tensors="pt").to(device)
+      image_features = model.get_image_features(**inputs).reshape(1,-1)
+      l = cos(image_features.to(device), x)
+      o = torch.argmax(l).item()
 
-    for i in data_museum.keys():
-       if o == n:
-          res = i
-          break
-       n+=1
-       ''' o = cos(image_features, torch.Tensor(data_museum[i]['image_vector']).to("cuda"))
-       if o > n:
-          res = i
-          n = o '''
-    print(o)      
-    result = data_museum[res]
+      for i in data_museum.keys():
+         if o == n:
+           res = i
+           break
+         n+=1
+
+      print(l[o])  
+      if l[o].item() > 0.8: 
+        result = data_museum[res]
+      else:
+        result =  {'title': 'Данная картина не найдена', 'author' : "",'descr' : ""}
+
 
     return json.dumps({'title': result['title'], 'author' : result['author'],'descr' : result['descr']})
 
@@ -133,7 +146,8 @@ def process_museum_image(img_str):
 
 def process_museum_text(text):
     
-    torch.cuda.empty_cache
+    if torch.cuda.is_available():
+       torch.cuda.empty_cache
     n = 0
     res = ""
     
