@@ -1,9 +1,7 @@
 import os
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from dotenv import load_dotenv
 
-load_dotenv()
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -12,10 +10,7 @@ class Settings(BaseSettings):
 
     bot_token: str
 
-    ROOT_PATH: str = os.path.dirname(os.path.abspath(__file__))
-    YOLO_PATH: str = ROOT_PATH + "/resources/yolo"
-    YOLO_CLASSES_DETECT: list = ['person', 'car', 'bus', "dog", "cat"]
-    API_URL: str = "http://localhost:8000/test"
+    API_URL: str = "http://localhost:8000"
 
 
 settings = Settings()
