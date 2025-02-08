@@ -3,3 +3,10 @@
 *.DS_Store
 __pycache__/
 .vscode/
+requirements_mac.txt
+Hackathon TSU/
+museum_description_last3.json
+train_attribution_geo_full_last4.json
+.env
+train_attribution_geo_full_last5.json
+*.jpg
