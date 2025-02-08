@@ -59,7 +59,23 @@ pip install protobuf==3.20.0
 - Для использования модели VGG16 (поиск по картинам) необходимо развернуть отдельное окружение
   requirements_keras.txt
 
+## Запуск API (в окружении tgu)
 
+```
+call tgu\Scripts\activate
+call uvicorn --reload detect_api:app
+call tgu\Scripts\deactivate
+pause
+```
+
+- Для использования модели VGG16 (поиск по картинам) необходимо стартовать отдельное API
+
+```
+call tgu_keras\Scripts\activate
+call uvicorn --reload detect_api:app --port 8001
+call tgu_keras\Scripts\deactivate
+pause
+```
 ## Пример запроса к API по фотографии достопримечательности Москвы
 
 ```
