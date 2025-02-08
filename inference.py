@@ -91,23 +91,23 @@ def process_text(text):
         torch.cuda.empty_cache
     n = 0
     res = ""
-
-    text_features = model2.encode(text)
-    print(text_features.shape)
-    for i in data_landmark.keys():
+    with torch.no_grad():
+      text_features = model2.encode(text)
+      print(text_features.shape)
+      for i in data_landmark.keys():
        results = util.semantic_search(text_features, np.array(data_landmark[i]['text_vector'],dtype='float32'))
        o = results[0][0]['score']
        
        if o > n:
           res = i
           n = o
-    print(n)      
-    result = data_landmark[res]
-    finded_image =  Image.open(result['filename'])
-    buffered = io.BytesIO()
-    finded_image.save(buffered, format="JPEG")
-    finded_img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
-    return json.dumps({'title': result['title'], 'location' : result['location'],'descr' : result['descr'], 'url' : result['url'] , 'wikipedia' : result['wikipedia'], 'image' : finded_img_str })
+      print(n)      
+      result = data_landmark[res]
+      finded_image =  Image.open(result['filename'])
+      buffered = io.BytesIO()
+      finded_image.save(buffered, format="JPEG")
+      finded_img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
+      return json.dumps({'title': result['title'], 'location' : result['location'],'descr' : result['descr'], 'url' : result['url'] , 'wikipedia' : result['wikipedia'], 'image' : finded_img_str })
 
 
 
@@ -150,20 +150,20 @@ def process_museum_text(text):
        torch.cuda.empty_cache
     n = 0
     res = ""
-    
-    text_features = model2.encode(text)
-    print(text_features.shape)
-    for i in data_museum.keys():
-       results = util.semantic_search(text_features, np.array(data_museum[i]['text_vector'],dtype='float32'))
-       o = results[0][0]['score']
+    with torch.no_grad():
+      text_features = model2.encode(text)
+      print(text_features.shape)
+      for i in data_museum.keys():
+         results = util.semantic_search(text_features, np.array(data_museum[i]['text_vector'],dtype='float32'))
+         o = results[0][0]['score']
        
-       if o > n:
-          res = i
-          n = o
-    print(n)      
-    result = data_museum[res]
-    finded_image =  Image.open(result['filename'])
-    buffered = io.BytesIO()
-    finded_image.save(buffered, format="JPEG")
-    finded_img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
-    return json.dumps({'title': result['title'], 'author' : result['author'],'descr' : result['descr'], 'image' : finded_img_str })
+         if o > n:
+            res = i
+            n = o
+      print(n)      
+      result = data_museum[res]
+      finded_image =  Image.open(result['filename'])
+      buffered = io.BytesIO()
+      finded_image.save(buffered, format="JPEG")
+      finded_img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
+      return json.dumps({'title': result['title'], 'author' : result['author'],'descr' : result['descr'], 'image' : finded_img_str })
