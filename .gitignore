@@ -6,7 +6,9 @@ __pycache__/
 requirements_mac.txt
 Hackathon TSU/
 museum_description_last3.json
-train_attribution_geo_full_last4.json
-.env
 train_attribution_geo_full_last5.json
+.env
+train_a
+data/
+data_landmark/
 *.jpg
