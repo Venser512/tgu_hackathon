@@ -135,6 +135,7 @@ result['image'] = Image.open(io.BytesIO(img_data))
 Аналогично запросам к достопримечательностям.
   Эндпоинты
   url = "http://localhost:8000/museum_image/"
+ (url = "http://localhost:8001/museum_image/ для модели VGG16)"
   url = "http://localhost:8000/museum_text/"
 ``` 
 
