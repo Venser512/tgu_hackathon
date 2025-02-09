@@ -11,6 +11,7 @@ from aiogram import F, Router, types
 from aiogram.client import bot
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
+from aiogram.types import FSInputFile
 
 from config import settings
 
@@ -36,6 +37,26 @@ async def paint_command(message: types.Message):
     CURRENT_MENU = 'paint'
     await message.answer(
         text="Выбран пункт меню - <b>Поиск картины по фото</b>. Загрузите фото"
+    )
+
+
+@router.message(Command("sign_text"))
+async def sign_command(message: types.Message):
+    global CURRENT_MENU
+
+    CURRENT_MENU = 'sign_text'
+    await message.answer(
+        text="Выбран пункт меню - <b>Поиск достопримечательности по тексту</b>. Введите название достопримечательности"
+    )
+
+
+@router.message(Command("paint_text"))
+async def paint_command(message: types.Message):
+    global CURRENT_MENU
+
+    CURRENT_MENU = 'paint_text'
+    await message.answer(
+        text="Выбран пункт меню - <b>Поиск картины по названию</b>. Введите название картины"
     )
 
 
@@ -100,3 +121,73 @@ async def image_message(message: types.Message):
             await message.answer(text=f"Произошла ошибка: [{e}]")
     else:
         await message.answer(text="Выберите пункт меню перед загрузкой фото")
+
+
+@router.message(F.text)
+async def paint_text_command(message: types.Message):
+    global CURRENT_MENU
+
+    if CURRENT_MENU == 'sign_text':
+        try:
+            url = settings.API_URL + "/landmark_text/"
+
+            with requests.Session() as client:
+                resp_rep = client.post(url, data=json.dumps({"input_text": message.text}))
+
+            if resp_rep.status_code == 200:
+                result = json.loads(json.loads(resp_rep.text)['Result'])
+                img_data = base64.b64decode(result['image'])
+
+                path = f'./resources/temp/{message.from_user.id}'
+                isExist = os.path.exists(path)
+                if not isExist:
+                    os.makedirs(path)
+
+                imagePath = path + "/" + str(message.message_id) + ".jpg"
+                print(f"imagePath: {imagePath}")
+                img = Image.open(io.BytesIO(img_data))
+                img.save(imagePath, 'jpeg')
+                print("saveImage")
+
+                await message.bot.send_photo(chat_id=message.from_user.id,
+                                             photo=FSInputFile(path=imagePath))
+            else:
+                await message.answer(text="Ошибка")
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            await message.answer(text=f"Произошла ошибка: [{e}]")
+    elif CURRENT_MENU == 'paint_text':
+        try:
+            url = settings.API_URL + "/museum_text/"
+
+            with requests.Session() as client:
+                resp_rep = client.post(url, data=json.dumps({"input_text": message.text}))
+
+            if resp_rep.status_code == 200:
+                try:
+                    print(resp_rep.text)
+                    result = json.loads(json.loads(resp_rep.text)['Result'])
+                    img_data = base64.b64decode(result['image'])
+
+                    path = f'./resources/temp/{message.from_user.id}'
+                    isExist = os.path.exists(path)
+                    if not isExist:
+                        os.makedirs(path)
+
+                    imagePath = path + "/" + str(message.message_id) + ".jpg"
+                    print(f"imagePath: {imagePath}")
+                    img = Image.open(io.BytesIO(img_data))
+                    img.save(imagePath, 'jpeg')
+                    print("saveImage")
+
+                    await message.bot.send_photo(chat_id=message.from_user.id,
+                                                 photo=FSInputFile(path=imagePath))
+                except Exception as e:
+                    await message.answer(text=f"Картина не найдена")
+            else:
+                await message.answer(text="Ошибка")
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            await message.answer(text=f"Произошла ошибка: [{e}]")
+    else:
+        await message.answer(text="Выберите пункт меню перед вводом текста")

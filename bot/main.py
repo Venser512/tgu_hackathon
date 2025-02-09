@@ -17,10 +17,14 @@ async def set_main_menu(bot: Bot):
     main_menu_commands = [
         BotCommand(command='/sign',
                    description='Поиск достопримечательности по фото'),
+        BotCommand(command='/sign_text',
+                   description='Поиск достопримечательности по тексту'),
         BotCommand(command='/paint',
                    description='Поиск картины по фото'),
-        BotCommand(command='/help',
-                   description='Помощь')
+        BotCommand(command='/paint_text',
+                   description='Поиск картины по тексту'),
+        #BotCommand(command='/help',
+        #           description='Помощь')
     ]
 
     await bot.set_my_commands(main_menu_commands)
