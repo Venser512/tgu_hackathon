@@ -12,3 +12,4 @@ train_a
 data/
 data_landmark/
 *.jpg
+my_file/
